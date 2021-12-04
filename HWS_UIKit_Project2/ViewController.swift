@@ -21,6 +21,11 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .action, target: self, action: #selector(shareScore)
+        )
+        
         countries += ["estonia", "france", "germany", "ireland", "italy", "monaco",
                       "nigeria", "poland", "russia", "spain", "uk", "us"]
         askQuestion()
@@ -57,7 +62,6 @@ class ViewController: UIViewController {
             message = "Good job!"
         } else {
             title = "Wrong"
-            score -= 1
             message = "You selected the flag for \(countries[sender.tag].uppercased())"
         }
             
@@ -72,7 +76,18 @@ class ViewController: UIViewController {
         let message = "You guessed \(score)/\(maxGuesses) flags correctly."
         let ac = UIAlertController(title: "Game Over!", message: message, preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: startOver))
+        ac.addAction(UIAlertAction(title: "Share", style: .default, handler: shareFinalScore))
         present(ac, animated: true)
+    }
+    
+    func shareFinalScore(action: UIAlertAction!) {
+        shareScore()
+        startOver(action: action)
+    }
+    
+    @objc func shareScore() {
+        let vc = UIActivityViewController(activityItems: ["I guessed \(score)/\(maxGuesses) flags correctly. Can you beat my score?"], applicationActivities: [])
+        present(vc, animated: true)
     }
     
     func startOver(action: UIAlertAction!) {
